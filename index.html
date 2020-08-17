@@ -46,18 +46,17 @@
             <div class="search-bar col-md-6 mx-auto">
                 <h1 class="text-center">Lyrics Search</h1>
                 <div class="search-box my-5">
-                    <input type="text" class="form-control" placeholder="Enter your artist song name">
-                    <button class="btn btn-success search-btn">Search</button>
+                    <input id="form" type="text" class="form-control" placeholder="Enter your artist song name" id="artist">
+                    <button id="submitBtn" class="btn btn-success search-btn">Search</button>
                 </div>
             </div>
             <!-- === Simple results === -->
             <div class="d-flex justify-content-center">
-                <div class="">
-                    <p class="author lead"><strong>Purple Noon</strong> Album by <span>Washed Out</span> <button class="btn btn-success">Get Lyrics</button></p>
-                    <p class="author lead"><strong>Purple Noon</strong> Album by <span>Washed Out</span> <button class="btn btn-success">Get Lyrics</button></p>
-                    <p class="author lead"><strong>Purple Noon</strong> Album by <span>Washed Out</span> <button class="btn btn-success">Get Lyrics</button></p>
-                    <p class="author lead"><strong>Purple Noon</strong> Album by <span>Washed Out</span> <button class="btn btn-success">Get Lyrics</button></p>
-                    <p class="author lead"><strong>Purple Noon</strong> Album by <span>Washed Out</span> <button class="btn btn-success">Get Lyrics</button></p>
+                <div id="emptyBox" class="box">
+                    <h2 class="result"></h2>
+                </div>
+                <div class="emptyBox1">
+
                 </div>
             </div>
             <!-- Single Lyrics -->
@@ -220,6 +219,84 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <!-- Custom Script Here -->
+
+    <script>
+    //    const searchBtn = document.getElementById('searchBtn');
+    //    const searchBox = document.getElementById('form').value;
+    //    const result = document.getElementById('result').value;
+    //    let artist=document.getElementById('artist').value;
+       
+    //    searchBtn.addEventListener('click', function(){
+           
+           
+       document.getElementById("submitBtn").addEventListener("click", function(){
+        fetch('https://api.lyrics.ovh/suggest/+artist')
+           .then(response => response.json())
+           .then(data => {
+               console.log(data);
+               const artistList = data.data;
+               let artistListLen = data.data.length;
+               for(let i = 0; i<10; i++){
+                   const element = artistList[i];
+                   let item = element.artistListLen;
+                   let artistName = element.artist.name;
+                   let emptyBox = document.getElementById("box");
+                   let boxChild = document.createElement("p");
+                   let boxChildBtn = document.createElement("button");
+                   boxChildBtn.innerHTML = "Get Lyrics";
+                   boxChildBtn.style.float = "right"; 
+                   boxChildBtn.style.color = "White";
+                   boxChildBtn.style.background = "#19102D";
+                   boxChildBtn.style.borderRadius ="1.5rem";
+                   boxChildBtn.style.padding ="9Px 20px";
+                   boxChildBtn.style.position = "absolute";
+                   boxChildBtn.style.width = "20%";
+                   boxChildBtn.style.fontFamily ="Arial";
+                   boxChildBtn.style.border = "1px solid gray";
+                   boxChildBtn.style.borderRadius = "5%";
+                   boxChildBtn.style.display = "inline-block";
+
+                   boxChild.style.color = "gray";
+                   boxChild.style.width = "50%";
+                   boxChild.style.fontFamily="Arial";
+                   boxChild.style.border="3px solid grey";
+                   boxChild.style.display="inline-block";
+                   boxChild.style.position = "relative";
+                   boxChild.style.border = "1px solid #141127";
+                   boxChild.style.backgroundColor = "#424349";
+                   boxChild.style.color = "white";
+                   boxChild.style.borderRadius = "10%";
+                   boxChild.innerHTML=item;
+
+                    
+                   emptyBox.appendChild(boxChild);
+                   emptyBox.appendChild(boxChildBtn);
+
+                   boxChildBtn.addEventListener("click", function(){
+                    fetch(`https://api.lyrics.ovh/v1/${artistName}/${item}`)  
+                    .then(response => response.json())
+                    .then(data => {
+                        let lyricResult = data.lyrics;
+                        let emptyBox1 = document.getElementById("box1");
+
+                        let lyric = document.createElement("p");
+                        let brake = document.createElement("br");
+                        lyric.innerHTML = lyricResult;
+                        emptyBox1.appendChild(lyric);
+                        emptyBox1.appendChild(brake);
+
+                    })
+                   })
+
+                   console.log(item);
+                   
+               }
+               
+           })
+       });
+
+       
+    </script>
 
 </body>
 
